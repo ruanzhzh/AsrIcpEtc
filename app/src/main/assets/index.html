@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	    <meta name="renderer" content="webkit">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="css/index.css" />
+		<script src="js/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript" src="js/index.js" ></script>
+	    <title></title>
+	</head>
+	<body>
+		<div class="login-container">
+			<div class="header">
+				<p>智慧桌牌</p>
+			</div>
+			<div class="content">
+				<form id="form">
+					<div class="formList ip process1">
+						<label class="label">ip</label>
+						<input id="icpWebIp" name="icpWebIp" type="text" placeholder="书记员端(icp-web)ip,非联网下不用填写" />
+					</div>
+					<div class="formList port process1">
+						<label class="label">端口</label>
+						<input id="port" name="port" type="text" placeholder="书记员端(icp-web)端口,非联网下不用填写" />
+					</div>
+					<div class="formList context process1">
+						<label class="label">上下文</label>
+						<input id="context" name="context" type="text" placeholder="上下文，默认为/不需要修改" value="/"/>
+					</div>
+
+					<div class="formList court process2">
+						<label class="label">选择法院</label>
+						<select id="court" name="court" data-error="请选择法院" placeholder="法院">
+							<option value="">---</option>
+						</select>
+					</div>
+					<div class="formList org process2">
+						<label class="label">选择场地</label>
+						<select id="org" name="org" data-error="请选择场地" placeholder="场地">
+							<option value="">---</option>
+						</select>
+					</div>
+
+					<div class="formList roleName process3">
+						<label class="label">诉讼地位</label>
+						<select id="roleName" name="roleName" data-error="请选择诉讼地位" placeholder="诉讼地位">
+							<option value="">---</option>
+							<option value="审判长">审判长</option>
+							<option value="陪审员">陪审员</option>
+							<option value="审判员">审判员</option>
+							<option value="书记员">书记员</option>
+							<option value="被告人">被告人</option>
+							<option value="原告人">原告人</option>
+							<option value="被告代理人">被告代理人</option>
+							<option value="原告代理人">原告代理人</option>
+							<option value="上诉人">上诉人</option>
+							<option value="上诉代理人">上诉代理人</option>
+							<option value="被上诉人">被上诉人</option>
+							<option value="被上诉代理人">被上诉代理人</option>
+							<option value="证人">证人</option>
+							<option value="第三人">第三人</option>
+						</select>
+					</div>
+
+					<div class="formList ip process3">
+						<label class="label">设备IP</label>
+						<input id="ip" name="ip" type="text" data-error="请输入设备IP" placeholder="设备IP"/>
+					</div>
+
+					<div class="formList background process3">
+						<label class="label">背景</label>
+						<select id="background" name="background" data-error="请选择背景" placeholder="背景">
+							<option value="1">黑底</option>
+							<option value="2">蓝底</option>
+						</select>
+					</div>
+
+				</form>
+				<div class="btn-group">
+					<button class="next process1">下一步</button>
+
+					<button class="prev process2">上一步</button>
+					<button class="next process2">下一步</button>
+
+					<button class="prev process3">上一步</button>
+					<button class="sumbit process3">确定</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="card-container">
+			<button class="reset">初始化</button>
+			<div class="background bg1"></div>
+			<div class="background bg2"></div>
+		</div>
+	</body>
+</html>

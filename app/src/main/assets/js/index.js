@@ -1,0 +1,344 @@
+// 重新初始化
+$(document).on('click', "button.reset", function(e) {
+    localStorage.removeItem("roleName");
+    localStorage.removeItem("background");
+    localStorage.removeItem("baseUrl");
+    localStorage.removeItem("orgId");
+    localStorage.removeItem("devIp");
+    window.location.reload();
+});
+
+// 第一步骤的下一步
+$(document).on('click', "button.process1.next", function(e) {
+     // 隐藏第一步
+     $(".process1").hide();
+     $("body .emptyTip").remove();
+
+	var icpWebIp = $("#icpWebIp").val();
+    var port = $("#port").val();
+	if(!ip || !port){
+	// 非联网情况下，直接跳入第三步骤
+		$(".formList.process3").css("display", "flex");
+		$(".formList.ip.process3").hide();
+		$("button.process3").show();
+	}else{
+	// 跳入第二步骤
+	    $(".formList.process2").css("display", "flex");
+	    $("button.process2").show();
+	    if($("#court")[0].options.length == 1){
+            // 获取法院
+            var context = $("#context").val();
+            $.ajax({
+                url: "http://"+ icpWebIp +":"+ port + context +"/etc/querycourtlist",
+                dataType: "json",
+                type: "get",
+                success: function (resp) {
+                    if (!resp || resp.result == '96') {
+                        showEmptyTargetWord($("select[name='court']"),"系统异常,获取法院失败");
+                        return;
+                    }
+                    if (resp.result == '6') {
+                        showEmptyTargetWord($("select[name='court']"),"法院列表为空");
+                        return;
+                    }
+                    // 法院数据
+                    var courtHTML = '<option value="">---</option>';
+                    var courtList = resp.object;
+                    $.each(courtList, function(index, item){
+                         courtHTML += '<option value="'+ item.orgId + '" title="'+ item.orgName +'">'+ item.orgName +'</option>';
+                    });
+                    $('#court').html(courtHTML);
+                },
+                error: function(e) {
+                    showEmptyTargetWord($("select[name='court']"),"网络异常,获取法院失败");
+                    console.error("网络异常,获取法院失败",e);
+                }
+            });
+            // 场地列表
+            $('#court').change(function(){
+                $("body .emptyTip").remove();
+                $('#org').html('<option value="">---</option>');
+                var courtId = $(this).val();
+                $.ajax({
+                    url: "http://"+ icpWebIp +":"+ port + context +"/etc/queryorglist",
+                    dataType: "json",
+                    type: "post",
+                    data: {
+                        "courtId":courtId
+                    },
+                    success: function (resp) {
+                        if (!resp || resp.result == '96') {
+                            showEmptyTargetWord($("select[name='org']"),"系统异常,获取场地失败");
+                            return;
+                        }
+                        if (resp.result == '6') {
+                            showEmptyTargetWord($("select[name='org']"),"场地列表为空");
+                            return;
+                        }
+                        // 法庭数据
+                        var orgList = resp.object;
+                        var orgHTML = '<option value="">---</option>';
+                        $.each(orgList, function(index, item){
+                             orgHTML += '<option value="'+ item.orgId + '" title="'+ item.orgName +'">'+ item.orgName +'</option>';
+                        });
+                        $('#org').html(orgHTML);
+                    },
+                    error: function(e) {
+                        showEmptyTargetWord($("select[name='org']"),"网络异常,获取场地失败");
+                        console.error("网络异常,获取场地失败",e);
+                    }
+                })
+            });
+        }
+	}
+});
+
+// 第二步骤的下一步
+$(document).on('click', "button.process2.next", function(e) {
+     // 校验
+     if (!$("select[name='court']").val()) {
+        showEmptyTargetWord($("select[name='court']"))
+        return
+     }
+     if (!$("select[name='org']").val()) {
+        showEmptyTargetWord($("select[name='org']"))
+        return
+     }
+
+     // 隐藏第二步
+     $(".process2").hide();
+     $("body .emptyTip").remove();
+     // 显示第三步
+     $('#roleName').html('<option value="">---</option>');
+     $(".formList.process3").css("display", "flex");
+     $("button.process3").show();
+     // 联网下，隐藏背景，由书记员端设置
+     var icpWebIp = $("#icpWebIp").val();
+     if(icpWebIp){
+          $(".formList.background.process3").hide();
+     }
+
+     // 设备Ip, 从安桌获取到
+     var devIp = localStorage.getItem("devIp");
+     $("#ip").val(devIp);
+     // 获取诉讼地位
+     if($("#roleName")[0].options.length == 1){
+        var port = $("#port").val();
+        var context = $("#context").val();
+        $.ajax({
+            url: "http://"+ icpWebIp +":"+ port + context +"/etc/queryrolelist",
+            dataType: "json",
+            type: "get",
+            success: function (resp) {
+                if (!resp) {
+                    showEmptyTargetWord($("select[name='roleName']"),"系统异常,获取诉讼地位失败");
+                    return;
+                }
+                if (resp.result == '6') {
+                    showEmptyTargetWord($("select[name='roleName']"),"诉讼地位列表为空");
+                    return;
+                }
+                var roleNameHTML = '<option value="">---</option>';
+                var roleList = resp.object;
+                $.each(roleList, function(index, item){
+                     roleNameHTML += '<option value="'+ item.paramName + '" title="'+ item.paramName +'">'+ item.paramName +'</option>';
+                });
+                $('#roleName').html(roleNameHTML);
+            },
+            error: function(e) {
+                showEmptyTargetWord($("select[name='court']"),"网络异常,获取诉讼地位失败");
+                console.error("网络异常,获取诉讼地位失败",e);
+            }
+        });
+    }
+});
+
+// 第二步骤的上一步
+$(document).on('click', "button.process2.prev", function(e) {
+	// 隐藏第二步
+    $(".process2").hide();
+    $("body .emptyTip").remove();
+    // 显示第一步
+    $(".formList.process1").css("display", "flex")
+    $("button.process1").show()
+})
+
+// 第三步骤的上一步
+$(document).on('click', "button.process3.prev", function(e) {
+	// 隐藏第三步
+    $(".process3").hide();
+    $("body .emptyTip").remove();
+
+    var icpWebIp = $("#icpWebIp").val();
+    if(icpWebIp){
+    // 联网下，显示第二步
+        $(".formList.process2").css("display", "flex")
+        $("button.process2").show()
+    }else{
+    // 非联网下，显示第一步
+        $(".formList.process1").css("display", "flex")
+        $("button.process1").show()
+    }
+
+})
+
+// 确定
+$(document).on('click', "button.sumbit", function(e) {
+    // 校验
+	if (!$("select[name='roleName']").val()) {
+		showEmptyTargetWord($("select[name='roleName']"));
+		return;
+	}
+	var icpWebIp = $("#icpWebIp").val();
+    var devIp = $("#ip").val();
+    if(icpWebIp && !devIp){
+        showEmptyTargetWord($("#ip"));
+        return;
+    }
+
+    var port = $("#port").val();
+    if(icpWebIp && port){
+        // 场地
+        var orgId = $("#org").val();
+        var context = $("#context").val() || "/";
+        // 注册电子桌牌信息
+        $.ajax({
+            url: "http://"+ icpWebIp +":"+ port + context +"/elecTableCard/saveInfo",
+            dataType: "json",
+            type: "post",
+            data:{
+                 "orgId": orgId,
+                 "ip": devIp,
+                 "roleName": $("#roleName").val()
+            },
+            success: function (resp) {
+                if (!resp || resp.result != '0') {
+                    console.error("系统异常,注册电子桌牌信息失败.", resp);
+                    showEmptyTargetWord($("#ip"), "注册电子桌牌信息失败");
+                    return;
+                }
+                var baseUrl = "http://"+ icpWebIp +":"+ port + context;
+                afterSaveHandle(orgId, devIp, baseUrl);
+            },
+            error: function(e) {
+                console.error("网络异常,注册电子桌牌信息失败",e);
+                showEmptyTargetWord($("#ip"), "注册电子桌牌信息失败");
+            }
+        });
+    }else{
+       afterSaveHandle();
+    }
+})
+
+// 保存后续处理
+function afterSaveHandle(orgId, devIp, baseUrl){
+    // 存入本地存储
+    // 诉讼地位
+    var roleName = $("#roleName").val();
+    localStorage.setItem("roleName", roleName);
+    // 背景
+    var background = $("#background").val();
+    localStorage.setItem("background", background);
+    // 场地
+    if(orgId){
+        localStorage.setItem("orgId", orgId);
+    }
+    // 设备IP
+    if(devIp){
+        localStorage.setItem("devIp", devIp);
+    }
+    // icp-web地址
+    if(baseUrl){
+        localStorage.setItem("baseUrl", baseUrl);
+    }
+
+    // 隐藏初始化界面
+    $("body .emptyTip").remove();
+    $(".login-container").hide();
+    // 显示电子桌牌界面
+    $(".card-container").show();
+    $(".background").hide();
+    $(".card-container .bg" + background).html(roleName).show();
+    // 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
+    pollRemoteSet();
+}
+
+
+function showEmptyTargetWord(target, errorMsg) {
+	$("body .emptyTip").remove()
+	let dom = target[0]
+	let left = dom.getBoundingClientRect().x - 90
+	let top = dom.getBoundingClientRect().bottom + 10
+	let style = "left:" + left +"px; top:" + top + "px;"
+	var msg = errorMsg == undefined?target.attr("data-error"):errorMsg;
+	let errorTip = "<p class='emptyTip' style='" + style + "'>" + msg + "</p>"
+	$("body").append(errorTip)
+}
+
+// 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
+function pollRemoteSet(){
+    var baseUrl = localStorage.getItem("baseUrl");
+    if(baseUrl){
+        setInterval(function(){
+            var orgId = localStorage.getItem("orgId");
+            var devIp = localStorage.getItem("devIp");
+            $.ajax({
+                url: baseUrl +"/elecTableCard/getInfo",
+                dataType: "json",
+                type: "post",
+                data:{
+                    "orgId": orgId,
+                    "ip": devIp
+                },
+                success: function (resp) {
+                    if (!resp || resp.result != '0' || !resp.data) {
+                        console.error("系统异常,查询书记员端的电子桌牌设置失败.", resp);
+                        return;
+                    }
+                    var data = resp.data;
+                    if(!data["roleName"] || !data["background"]){
+                        console.error("查询书记员端的电子桌牌返回的数据不合法.", resp);
+                        return;
+                    }
+                    // 诉讼地位变化
+                    if(roleName != data["roleName"]){
+                        roleName = data["roleName"];
+                        localStorage.setItem("roleName", roleName);
+                        if(background != data["backGroundName"]){// 背景也变化
+                            background = data["backGroundName"];
+                            localStorage.setItem("background", background);
+                            $(".background").hide();
+                            $(".card-container .bg" + background).show();
+                        }
+                        $(".card-container .bg" + background).html(roleName);
+                    }else if(background != data["backGroundName"]){
+                    // 背景变化
+                        background = data["backGroundName"];
+                        localStorage.setItem("background", background);
+                        $(".background").hide();
+                        $(".card-container .bg" + background).show().html(roleName);
+                    }
+                },
+                error: function(e) {
+                    console.error("网络异常,查询书记员端的电子桌牌设置失败",e);
+                }
+            });
+        },5000);
+    }
+}
+
+
+$(function(){
+	// 判断本地存储是否经设置过诉讼地位，直接跳到诉讼地位
+    var roleName = localStorage.getItem("roleName");
+    var background = localStorage.getItem("background");
+
+    if(roleName && background){
+	    $(".login-container").hide();
+	    $(".card-container").show();
+	    $(".background").show();
+        $(".card-container .bg" + background).html(roleName);
+        // 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
+        pollRemoteSet();
+    }
+})
