@@ -1,5 +1,5 @@
 // 重新初始化
-$(document).on('click', "button.reset", function(e) {
+$(document).on('click', ".reset", function(e) {
     localStorage.removeItem("roleName");
     localStorage.removeItem("background");
     localStorage.removeItem("baseUrl");
@@ -182,6 +182,10 @@ $(document).on('click', "button.process3.prev", function(e) {
 
 })
 
+$(document).on('click', ".background span", function(e) {
+	$(this).addClass("choice").siblings().removeClass("choice");
+})
+
 // 确定
 $(document).on('click', "button.sumbit", function(e) {
     // 校验
@@ -195,6 +199,10 @@ $(document).on('click', "button.sumbit", function(e) {
         showEmptyTargetWord($("#ip"));
         return;
     }
+    if (!$("#background span[class='choice']").length) {
+		showEmptyTargetWord($("#background"));
+		return;
+	}
 
     var port = $("#port").val();
     if(icpWebIp && port){
@@ -237,7 +245,8 @@ function afterSaveHandle(orgId, devIp, baseUrl){
     var roleName = $("#roleName").val();
     localStorage.setItem("roleName", roleName);
     // 背景
-    var background = $("#background").val();
+//  var background = $("#background").val();
+	var background = $(".formList.background span[class='choice']").attr("target");
     localStorage.setItem("background", background);
     // 场地
     if(orgId){
@@ -279,9 +288,11 @@ function showEmptyTargetWord(target, errorMsg) {
 function pollRemoteSet(){
     var baseUrl = localStorage.getItem("baseUrl");
     if(baseUrl){
+        var orgId = localStorage.getItem("orgId");
+        var devIp = localStorage.getItem("devIp");
         setInterval(function(){
-            var orgId = localStorage.getItem("orgId");
-            var devIp = localStorage.getItem("devIp");
+            var roleName = localStorage.getItem("roleName");
+            var background = localStorage.getItem("background");
             $.ajax({
                 url: baseUrl +"/elecTableCard/getInfo",
                 dataType: "json",
@@ -291,12 +302,12 @@ function pollRemoteSet(){
                     "ip": devIp
                 },
                 success: function (resp) {
-                    if (!resp || resp.result != '0' || !resp.data) {
+                    if (!resp || resp.result != '0' || !resp.object) {
                         console.error("系统异常,查询书记员端的电子桌牌设置失败.", resp);
                         return;
                     }
-                    var data = resp.data;
-                    if(!data["roleName"] || !data["background"]){
+                    var data = resp.object;
+                    if(!data["roleName"] || !data["backGroundName"]){
                         console.error("查询书记员端的电子桌牌返回的数据不合法.", resp);
                         return;
                     }
@@ -332,11 +343,11 @@ $(function(){
 	// 判断本地存储是否经设置过诉讼地位，直接跳到诉讼地位
     var roleName = localStorage.getItem("roleName");
     var background = localStorage.getItem("background");
-
+	console.log('--------roleName-------', roleName, background)
     if(roleName && background){
 	    $(".login-container").hide();
 	    $(".card-container").show();
-	    $(".background").show();
+	    $(".background.bg" + background).show();
         $(".card-container .bg" + background).html(roleName);
         // 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
         pollRemoteSet();

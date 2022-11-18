@@ -71,10 +71,18 @@
 
 					<div class="formList background process3">
 						<label class="label">背景</label>
-						<select id="background" name="background" data-error="请选择背景" placeholder="背景">
+						<!--<select id="background" name="background" data-error="请选择背景" placeholder="背景">
 							<option value="1">黑底</option>
 							<option value="2">蓝底</option>
-						</select>
+						</select>-->
+						<div id="background" data-error="请选择背景" style="display: flex;align-items: center;">
+							<span target="1">
+								<img src="img/1.png" />
+							</span>
+							<span target="2">
+								<img src="img/2.png" />
+							</span>
+						</div>
 					</div>
 
 				</form>
@@ -91,7 +99,9 @@
 		</div>
 
 		<div class="card-container">
-			<button class="reset">初始化</button>
+			<div class="resetBox">
+				<img src="img/cz.png" class="reset" title="重置"/>
+			</div>
 			<div class="background bg1"></div>
 			<div class="background bg2"></div>
 		</div>

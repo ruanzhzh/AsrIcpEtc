@@ -84,6 +84,8 @@ body {
 
 .content .formList.ip {
 	background: url(../img/ip.png) no-repeat;
+}
+.content .formList.ip:not(.process3) {
 	margin-top: -0.35rem;
 }
 
@@ -102,7 +104,30 @@ body {
 .content .formList.site {
 	background: url(../img/site.png) no-repeat;
 }
+.content .formList.roleName {
+	background: url(../img/ssdw.png) no-repeat;
+}
 
+.content .formList.background {
+	background: url(../img/mzbg.png) no-repeat;
+}
+.content .formList.background span {
+	width: 60px;
+	height: 40px;
+	margin-right: 10px;
+	cursor: pointer;
+	box-sizing: border-box;
+	border: 1px solid transparent;
+}
+.content .formList.background span.choice {
+	border: 1px solid #F29F13;
+}
+.content .formList.background img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
 .content .formList .label {
     width: 0.65rem;
     display: inline-block;
@@ -194,12 +219,41 @@ button.process3 {
 
 .card-container {
     display: none;
-    position: absolute;
-    width: 8.6rem;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
 }
-button.reset{
-    float:right;
+.resetBox {
+	width: 60px;
+	height: 60px;
+	position: fixed;
+	right: 0;
+	top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.resetBox:hover .reset {
+	display: block;
+	cursor: pointer;
+}
+.reset{
+    display: none;
+}
+.card-container .background {
+	width: 100%;
+	height: 100vh;
+	line-height: 100vh;
+	text-align: center;
+	display: none;
+}
+.background.bg1 {
+	background: url(../img/bg-1.png) no-repeat;
+	background-size: cover;
+	color: #fff;
+}
+.background.bg2 {
+	background: url(../img/bg-2.png) no-repeat;
+	background-size: cover;
+	color: #fef4cb;
+	text-shadow: 4px -4px 20px #fff000, 0px 0px 34px #fff000;
 }
