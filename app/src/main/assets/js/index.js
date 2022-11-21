@@ -193,13 +193,16 @@ $(document).on('click', "button.sumbit", function(e) {
 		showEmptyTargetWord($("select[name='roleName']"));
 		return;
 	}
+	// 联网下，需要填写设备IP
 	var icpWebIp = $("#icpWebIp").val();
     var devIp = $("#ip").val();
     if(icpWebIp && !devIp){
         showEmptyTargetWord($("#ip"));
         return;
     }
-    if (!$("#background span[class='choice']").length) {
+    // 非联网下，需要选择背景
+    var background = $(".formList.background span[class='choice']").attr("target");
+    if (!icpWebIp && !background) {
 		showEmptyTargetWord($("#background"));
 		return;
 	}
@@ -245,7 +248,6 @@ function afterSaveHandle(orgId, devIp, baseUrl){
     var roleName = $("#roleName").val();
     localStorage.setItem("roleName", roleName);
     // 背景
-//  var background = $("#background").val();
 	var background = $(".formList.background span[class='choice']").attr("target");
     localStorage.setItem("background", background);
     // 场地
@@ -267,7 +269,8 @@ function afterSaveHandle(orgId, devIp, baseUrl){
     // 显示电子桌牌界面
     $(".card-container").show();
     $(".background").hide();
-    $(".card-container .bg" + background).html(roleName).show();
+    var txtLength = roleName.length;
+    $(".card-container .bg" + background).addClass("f"+ txtLength).html(roleName).show();
     // 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
     pollRemoteSet();
 }
@@ -313,17 +316,25 @@ function pollRemoteSet(){
                     }
                     // 诉讼地位变化
                     if(roleName != data["roleName"]){
+                        var oldTxtLength = roleName.length;
                         roleName = data["roleName"];
+                        var newTxtLength = roleName.length;
                         localStorage.setItem("roleName", roleName);
-                        if(background != data["backGroundName"]){// 背景也变化
+                        // 切换背景
+                        if(background != data["backGroundName"]){
                             background = data["backGroundName"];
                             localStorage.setItem("background", background);
                             $(".background").hide();
                             $(".card-container .bg" + background).show();
                         }
+                        // 字体长度变化
+                        if(newTxtLength != oldTxtLength){
+                            $(".card-container .bg" + background).removeClass("f"+ oldTxtLength).addClass("f"+ newTxtLength);
+                        }
+                        // 诉讼地位
                         $(".card-container .bg" + background).html(roleName);
                     }else if(background != data["backGroundName"]){
-                    // 背景变化
+                    // 仅背景切换
                         background = data["backGroundName"];
                         localStorage.setItem("background", background);
                         $(".background").hide();
@@ -347,8 +358,8 @@ $(function(){
     if(roleName && background){
 	    $(".login-container").hide();
 	    $(".card-container").show();
-	    $(".background.bg" + background).show();
-        $(".card-container .bg" + background).html(roleName);
+	    var txtLength = roleName.length;
+        $(".card-container .bg" + background).addClass("f"+ txtLength).html(roleName).show();
         // 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
         pollRemoteSet();
     }
