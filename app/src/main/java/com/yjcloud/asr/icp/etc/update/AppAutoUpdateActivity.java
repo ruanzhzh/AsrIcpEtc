@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -120,8 +121,7 @@ public class AppAutoUpdateActivity extends Activity {
                     if(is == null){
                         throw new RuntimeException("isStream is null");
                     }
-                    File file = new File(Environment.getExternalStorageDirectory(), CurrentVersion.APK_NAME);
-                    file = new File(Environment.getExternalStorageDirectory(), CurrentVersion.APK_NAME);
+                    File file = new File(getSavePath(), CurrentVersion.APK_NAME);
                     fileOutputStream = new FileOutputStream(file);
                     byte[] buf = new byte[1024];
                     int ch = -1;
@@ -138,7 +138,7 @@ public class AppAutoUpdateActivity extends Activity {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Toast toast = Toast.makeText(AppAutoUpdateActivity.this, "下载失败:"+ e.getMessage(), Toast.LENGTH_LONG);
+                            Toast toast = Toast.makeText(AppAutoUpdateActivity.this, "下载失败:"+ e.toString(), Toast.LENGTH_LONG);
                             toast.show();
                             finish();
                         }
@@ -150,14 +150,33 @@ public class AppAutoUpdateActivity extends Activity {
     }
 
     /**
+     * 获取存储路径
+     * @return
+     */
+    private String getSavePath() {
+        String path;
+        if (Build.VERSION.SDK_INT > 29) {
+            path = this.getExternalFilesDir(null).getAbsolutePath();
+        } else {
+            path = Environment.getExternalStorageDirectory().getPath() ;
+        }
+        return path;
+    }
+
+    /**
      * 结束下载
      */
     private void haveDownLoad(){
-        File file = new File(Environment.getExternalStorageDirectory(), CurrentVersion.APK_NAME);
+        File file = new File(getSavePath(), CurrentVersion.APK_NAME);
         if(!file.exists()){
-            Toast toast = Toast.makeText(AppAutoUpdateActivity.this, "文件不存在，更新失败!", Toast.LENGTH_LONG);
-            toast.show();
-            finish();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast toast = Toast.makeText(AppAutoUpdateActivity.this, "文件不存在，更新失败!", Toast.LENGTH_LONG);
+                    toast.show();
+                    finish();
+                }
+            });
             return;
         }
         handler.post(new Runnable() {
@@ -190,24 +209,7 @@ public class AppAutoUpdateActivity extends Activity {
      * 安装Apk
      */
     private void installNewApk(){
-        /*try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory(), CurrentVersion.APK_NAME)),
-                    "application/vnd.android.package-archive");
-            startActivity(intent);
-        }catch (Exception e){
-            Log.e(TAG, "安装APK失败", e);
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    Toast toast = Toast.makeText(AppAutoUpdateActivity.this, "安装APK失败:"+ e.getMessage(), Toast.LENGTH_LONG);
-                    toast.show();
-                    finish();
-                }
-            });
-        }*/
-
-        File apkFile = new File(Environment.getExternalStorageDirectory(), CurrentVersion.APK_NAME);
+        File apkFile = new File(getSavePath(), CurrentVersion.APK_NAME);
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
