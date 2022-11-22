@@ -105,7 +105,7 @@ public class AppAutoUpdateActivity extends Activity {
         pBar.show();
         new Thread(){
             public void run(){
-                String downApkUrl = baseUrl + "/board/"+ CurrentVersion.APK_NAME;
+                String downApkUrl = baseUrl + "/etc/"+ CurrentVersion.APK_NAME;
                 HttpClient client = new DefaultHttpClient();
                 HttpGet get = new HttpGet(downApkUrl);
                 HttpResponse response;
@@ -215,7 +215,7 @@ public class AppAutoUpdateActivity extends Activity {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 //记得修改com.xxx.fileprovider与androidmanifest相同
-                uri = FileProvider.getUriForFile(getApplicationContext(),"com.yjcloud.asr.icp.board.fileprovider", apkFile);
+                uri = FileProvider.getUriForFile(getApplicationContext(),"com.yjcloud.asr.icp.etc.fileprovider", apkFile);
                 intent.setDataAndType(uri,"application/vnd.android.package-archive");
             }else{
                 uri = Uri.parse("file://" + apkFile.toString());

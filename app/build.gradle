@@ -30,7 +30,7 @@ android {
         variant.outputs.all {
             //def curTime = new  Date()
             //def timeStr = curTime.format('ddMMyy_HHmm')
-            //outputFileName = "icpboard-${variant.versionName}.apk"
+            //outputFileName = "AsrIcpEtc-${variant.versionName}.apk"
             outputFileName = "AsrIcpEtc.apk"
         }
     }

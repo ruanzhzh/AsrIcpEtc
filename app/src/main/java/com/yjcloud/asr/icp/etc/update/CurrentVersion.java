@@ -15,7 +15,7 @@ public class CurrentVersion {
 
     public static final String APP_PACK_NAME = "com.yjcloud";
 
-    public static final String APK_NAME = "icpboard.apk";
+    public static final String APK_NAME = "AsrIcpEtc.apk";
 
     public static int getVerCode(Context context) throws PackageManager.NameNotFoundException {
         int verCode = -1;
