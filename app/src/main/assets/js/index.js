@@ -327,18 +327,19 @@ function pollRemoteSet(){
                             $(".background").hide();
                             $(".card-container .bg" + background).show();
                         }
-                        // 字体长度变化
-                        if(newTxtLength != oldTxtLength){
-                            $(".card-container .bg" + background).removeClass("f"+ oldTxtLength).addClass("f"+ newTxtLength);
-                        }
+                        // 字体样式
+                        $(".card-container .bg" + background).removeClass("f"+ oldTxtLength).addClass("f"+ newTxtLength);
                         // 诉讼地位
                         $(".card-container .bg" + background).html(roleName);
                     }else if(background != data["backGroundName"]){
                     // 仅背景切换
+                        var txtLength = roleName.length;
                         background = data["backGroundName"];
                         localStorage.setItem("background", background);
                         $(".background").hide();
                         $(".card-container .bg" + background).show().html(roleName);
+                        // 字体样式
+                        $(".card-container .bg" + background).removeClass("f"+ txtLength).addClass("f"+ txtLength);
                     }
                 },
                 error: function(e) {
