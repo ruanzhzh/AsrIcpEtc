@@ -328,7 +328,12 @@ function pollRemoteSet(){
                             $(".card-container .bg" + background).show();
                         }
                         // 字体样式
-                        $(".card-container .bg" + background).removeClass("f"+ oldTxtLength).addClass("f"+ newTxtLength);
+                        if(oldTxtLength != newTxtLength){
+                            $(".card-container .bg" + background).removeClass("f"+ oldTxtLength).addClass("f"+ newTxtLength);
+                        }
+                        if(!$(".card-container .bg" + background).hasClass("f"+ newTxtLength)){
+                            $(".card-container .bg" + background).addClass("f"+ newTxtLength);
+                        }
                         // 诉讼地位
                         $(".card-container .bg" + background).html(roleName);
                     }else if(background != data["backGroundName"]){
@@ -339,7 +344,9 @@ function pollRemoteSet(){
                         $(".background").hide();
                         $(".card-container .bg" + background).show().html(roleName);
                         // 字体样式
-                        $(".card-container .bg" + background).removeClass("f"+ txtLength).addClass("f"+ txtLength);
+                        if(!$(".card-container .bg" + background).hasClass("f"+ txtLength)){
+                            $(".card-container .bg" + background).addClass("f"+ txtLength);
+                        }
                     }
                 },
                 error: function(e) {
