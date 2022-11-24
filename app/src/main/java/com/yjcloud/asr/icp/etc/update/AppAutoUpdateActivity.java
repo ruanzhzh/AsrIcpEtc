@@ -218,7 +218,6 @@ public class AppAutoUpdateActivity extends Activity {
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 //记得修改com.xxx.fileprovider与androidmanifest相同
                 uri = FileProvider.getUriForFile(getApplicationContext(),"com.yjcloud.asr.icp.etc.fileprovider", apkFile);
-                intent.setDataAndType(uri,"application/vnd.android.package-archive");
             }else{
                 uri = Uri.parse("file://" + apkFile.toString());
             }
