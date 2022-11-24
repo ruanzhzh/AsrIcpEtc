@@ -294,8 +294,6 @@ function pollRemoteSet(){
         var orgId = localStorage.getItem("orgId");
         var devIp = localStorage.getItem("devIp");
         setInterval(function(){
-            var roleName = localStorage.getItem("roleName");
-            var background = localStorage.getItem("background");
             $.ajax({
                 url: baseUrl +"/elecTableCard/getInfo",
                 dataType: "json",
@@ -314,6 +312,8 @@ function pollRemoteSet(){
                         console.error("查询书记员端的电子桌牌返回的数据不合法.", resp);
                         return;
                     }
+                    var roleName = localStorage.getItem("roleName");
+                    var background = localStorage.getItem("background");
                     // 诉讼地位变化
                     if(roleName != data["roleName"]){
                         var oldTxtLength = roleName.length;
@@ -330,8 +330,7 @@ function pollRemoteSet(){
                         // 字体样式
                         if(oldTxtLength != newTxtLength){
                             $(".card-container .bg" + background).removeClass("f"+ oldTxtLength).addClass("f"+ newTxtLength);
-                        }
-                        if(!$(".card-container .bg" + background).hasClass("f"+ newTxtLength)){
+                        }else if(!$(".card-container .bg" + background).hasClass("f"+ newTxtLength)){
                             $(".card-container .bg" + background).addClass("f"+ newTxtLength);
                         }
                         // 诉讼地位

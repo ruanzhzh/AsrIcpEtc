@@ -263,6 +263,8 @@ button.process3 {
 .background.bg2.f2{
     font-size: 5rem;
     letter-spacing:1rem;
+    padding-left: 1rem;
+    box-sizing: border-box;
 }
 
 .background.bg1.f3,
