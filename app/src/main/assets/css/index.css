@@ -80,6 +80,7 @@ body {
     background-position: 0.15rem 50% !important;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
 .content .formList.ip {
@@ -215,6 +216,9 @@ button.process3 {
 	position: absolute;
 	color: red;
 	font-size: 0.14rem;
+	left: 0.39rem;
+	top: 100%;
+	display: none;
 }
 
 .card-container {

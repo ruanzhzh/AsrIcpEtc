@@ -27,7 +27,7 @@ $(document).on('click', "button.process1.next", function(e) {
 
      // 隐藏第一步
      $(".process1").hide();
-     $("body .emptyTip").remove();
+     $("body .emptyTip").hide();
 
 	if(ip && port){
 	// 跳入第二步骤
@@ -63,7 +63,7 @@ $(document).on('click', "button.process1.next", function(e) {
             });
             // 场地列表
             $('#court').change(function(){
-                $("body .emptyTip").remove();
+                $("body .emptyTip").hide();
                 $('#org').html('<option value="">---</option>');
                 var courtId = $(this).val();
                 $.ajax({
@@ -119,7 +119,7 @@ $(document).on('click', "button.process2.next", function(e) {
 
      // 隐藏第二步
      $(".process2").hide();
-     $("body .emptyTip").remove();
+     $("body .emptyTip").hide();
      // 显示第三步
      $('#roleName').html('<option value="">---</option>');
      $(".formList.process3").css("display", "flex");
@@ -169,7 +169,7 @@ $(document).on('click', "button.process2.next", function(e) {
 $(document).on('click', "button.process2.prev", function(e) {
 	// 隐藏第二步
     $(".process2").hide();
-    $("body .emptyTip").remove();
+    $("body .emptyTip").hide();
     // 显示第一步
     $(".formList.process1").css("display", "flex")
     $("button.process1").show()
@@ -179,7 +179,7 @@ $(document).on('click', "button.process2.prev", function(e) {
 $(document).on('click', "button.process3.prev", function(e) {
 	// 隐藏第三步
     $(".process3").hide();
-    $("body .emptyTip").remove();
+    $("body .emptyTip").hide();
 
     var icpWebIp = $("#icpWebIp").val();
     if(icpWebIp){
@@ -238,6 +238,7 @@ $(document).on('click', "button.sumbit", function(e) {
                 if (!resp || resp.result != '0') {
                     console.error("系统异常,注册电子桌牌信息失败.", resp);
                     showEmptyTargetWord($("#ip"), "注册电子桌牌信息失败");
+                    $("#ip")
                     return;
                 }
                 var baseUrl = "http://"+ icpWebIp +":"+ port + context;
@@ -276,7 +277,7 @@ function afterSaveHandle(orgId, devIp, baseUrl){
     }
 
     // 隐藏初始化界面
-    $("body .emptyTip").remove();
+    $("body .emptyTip").hide();
     $(".login-container").hide();
     // 显示电子桌牌界面
     $(".card-container").show();
@@ -289,14 +290,17 @@ function afterSaveHandle(orgId, devIp, baseUrl){
 
 
 function showEmptyTargetWord(target, errorMsg) {
-	$("body .emptyTip").remove()
-	let dom = target[0]
-	let left = dom.getBoundingClientRect().x - 90
-	let top = dom.getBoundingClientRect().bottom + 10
-	let style = "left:" + left +"px; top:" + top + "px;"
+//	$("body .emptyTip").remove()
+//	let dom = target[0]
+//	let left = dom.getBoundingClientRect().x - 90
+//	let top = dom.getBoundingClientRect().bottom + 10
+//	let style = "left:" + left +"px; top:" + top + "px;"
+//	var msg = errorMsg == undefined?target.attr("data-error"):errorMsg;
+//	let errorTip = "<p class='emptyTip' style='" + style + "'>" + msg + "</p>"
+//	$("body").append(errorTip)
+	$(".emptyTip").hide()
 	var msg = errorMsg == undefined?target.attr("data-error"):errorMsg;
-	let errorTip = "<p class='emptyTip' style='" + style + "'>" + msg + "</p>"
-	$("body").append(errorTip)
+	target.next().show().html(msg);
 }
 
 // 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
