@@ -10,24 +10,31 @@ $(document).on('click', ".reset", function(e) {
 
 // 第一步骤的下一步
 $(document).on('click', "button.process1.next", function(e) {
+     // 如果输入IP或端口，其余项需要校验
+     var icpWebIp = $("#icpWebIp").val();
+     var port = $("#port").val();
+     var context = $("#context").val() || "";
+     if (icpWebIp || port) {
+        if(!icpWebIp){
+            showEmptyTargetWord($("#icpWebIp"));
+            return;
+        }
+        if(!port){
+            showEmptyTargetWord($("#port"));
+            return;
+        }
+     }
+
      // 隐藏第一步
      $(".process1").hide();
      $("body .emptyTip").remove();
 
-	var icpWebIp = $("#icpWebIp").val();
-    var port = $("#port").val();
-	if(!ip || !port){
-	// 非联网情况下，直接跳入第三步骤
-		$(".formList.process3").css("display", "flex");
-		$(".formList.ip.process3").hide();
-		$("button.process3").show();
-	}else{
+	if(ip && port){
 	// 跳入第二步骤
-	    $(".formList.process2").css("display", "flex");
-	    $("button.process2").show();
-	    if($("#court")[0].options.length == 1){
+        $(".formList.process2").css("display", "flex");
+        $("button.process2").show();
+        if($("#court")[0].options.length == 1){
             // 获取法院
-            var context = $("#context").val();
             $.ajax({
                 url: "http://"+ icpWebIp +":"+ port + context +"/etc/querycourtlist",
                 dataType: "json",
@@ -90,6 +97,11 @@ $(document).on('click', "button.process1.next", function(e) {
                 })
             });
         }
+	}else{
+	// 非联网情况下，直接跳入第三步骤
+        $(".formList.process3").css("display", "flex");
+        $(".formList.ip.process3").hide();
+        $("button.process3").show();
 	}
 });
 
