@@ -327,9 +327,21 @@ function pollRemoteSet(){
                             $(".background").hide();
                             $(".card-container .bg" + background).show();
                         }
-                        // 字体样式
+                        // 字体样式切换
                         if(oldTxtLength != newTxtLength){
-                            $(".card-container .bg" + background).removeClass("f"+ oldTxtLength).addClass("f"+ newTxtLength);
+                            var classes = $(".card-container .bg" + background).attr("class").split(" ");
+                            var oldFontClass;
+                            for(var i = 0; i < classes.length; i++){
+                                if(/^f/.test(classes[i])){
+                                    oldFontClass = classes[i];
+                                    break;
+                                }
+                            }
+                            if(oldFontClass){
+                                console.log("===>oldFontClass: ", oldFontClass);
+                                $(".card-container .bg" + background).removeClass(oldFontClass);
+                            }
+                            $(".card-container .bg" + background).addClass("f"+ newTxtLength);
                         }else if(!$(".card-container .bg" + background).hasClass("f"+ newTxtLength)){
                             $(".card-container .bg" + background).addClass("f"+ newTxtLength);
                         }
