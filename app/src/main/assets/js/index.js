@@ -343,26 +343,22 @@ function pollRemoteSet(){
                             $(".background").hide();
                             $(".card-container .bg" + background).show();
                         }
-                        // 字体样式切换
-                        if(oldTxtLength != newTxtLength){
-                            var classes = $(".card-container .bg" + background).attr("class").split(" ");
-                            var oldFontClass;
-                            for(var i = 0; i < classes.length; i++){
-                                if(/^f/.test(classes[i])){
-                                    oldFontClass = classes[i];
-                                    break;
-                                }
-                            }
-                            if(oldFontClass){
-                                console.log("===>oldFontClass: ", oldFontClass);
-                                $(".card-container .bg" + background).removeClass(oldFontClass);
-                            }
-                            $(".card-container .bg" + background).addClass("f"+ newTxtLength);
-                        }else if(!$(".card-container .bg" + background).hasClass("f"+ newTxtLength)){
-                            $(".card-container .bg" + background).addClass("f"+ newTxtLength);
-                        }
                         // 诉讼地位
                         $(".card-container .bg" + background).html(roleName);
+                        // 字体切换
+                        var classes = $(".card-container .bg" + background).attr("class").split(" ");
+                        var oldFontClass;
+                        for(var i = 0; i < classes.length; i++){
+                            if(/^f/.test(classes[i])){
+                                oldFontClass = classes[i];
+                                break;
+                            }
+                        }
+                        if(oldFontClass){
+                            console.log("===>oldFontClass: ", oldFontClass);
+                            $(".card-container .bg" + background).removeClass(oldFontClass);
+                        }
+                        $(".card-container .bg" + background).addClass("f"+ newTxtLength);
                     }else if(background != data["backGroundName"]){
                     // 仅背景切换
                         var txtLength = roleName.length;
@@ -370,10 +366,20 @@ function pollRemoteSet(){
                         localStorage.setItem("background", background);
                         $(".background").hide();
                         $(".card-container .bg" + background).show().html(roleName);
-                        // 字体样式
-                        if(!$(".card-container .bg" + background).hasClass("f"+ txtLength)){
-                            $(".card-container .bg" + background).addClass("f"+ txtLength);
+                        // 字体切换
+                        var classes = $(".card-container .bg" + background).attr("class").split(" ");
+                        var oldFontClass;
+                        for(var i = 0; i < classes.length; i++){
+                            if(/^f/.test(classes[i])){
+                                oldFontClass = classes[i];
+                                break;
+                            }
                         }
+                        if(oldFontClass){
+                            console.log("===>oldFontClass: ", oldFontClass);
+                            $(".card-container .bg" + background).removeClass(oldFontClass);
+                        }
+                        $(".card-container .bg" + background).addClass("f"+ txtLength);
                     }
                 },
                 error: function(e) {
