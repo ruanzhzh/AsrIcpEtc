@@ -283,7 +283,18 @@ function afterSaveHandle(orgId, devIp, baseUrl){
     $(".card-container").show();
     $(".background").hide();
     var txtLength = roleName.length;
-    $(".card-container .bg" + background).addClass("f"+ txtLength).html(roleName).show();
+    if (roleName.indexOf(",") > -1) {
+    	let roleNameList = roleName.split(",");
+    	let newRoleName = roleNameList[0] + '</br>' + roleNameList[1];
+    	let newTxtLength = Math.max(roleNameList[0].length, roleNameList[1].length);
+    	$(".card-container .bg" + background).addClass("f"+ newTxtLength).addClass("line2").html(newRoleName).show();
+    } else {
+	    if (txtLength > 6) {
+	    	$(".card-container .bg" + background).addClass("f"+ txtLength).addClass("line2").html(roleName).show();
+	    } else {
+	    	$(".card-container .bg" + background).addClass("f"+ txtLength).html(roleName).show();
+	   	}
+   	}
     // 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
     pollRemoteSet();
 }
@@ -344,21 +355,13 @@ function pollRemoteSet(){
                             $(".card-container .bg" + background).show();
                         }
                         // 诉讼地位
-                        $(".card-container .bg" + background).html(roleName);
-                        // 字体切换
-                        var classes = $(".card-container .bg" + background).attr("class").split(" ");
-                        var oldFontClass;
-                        for(var i = 0; i < classes.length; i++){
-                            if(/^f/.test(classes[i])){
-                                oldFontClass = classes[i];
-                                break;
-                            }
-                        }
-                        if(oldFontClass){
-                            console.log("===>oldFontClass: ", oldFontClass);
-                            $(".card-container .bg" + background).removeClass(oldFontClass);
-                        }
-                        $(".card-container .bg" + background).addClass("f"+ newTxtLength);
+                        if (roleName.indexOf(",") > -1) {
+					    	let roleNameList = roleName.split(",");
+	    					let newRoleName = roleNameList[0] + '</br>' + roleNameList[1];
+					    	$(".card-container .bg" + background).html(newRoleName);
+					    } else {
+                        	$(".card-container .bg" + background).html(roleName);
+                       	}
                     }else if(background != data["backGroundName"]){
                     // 仅背景切换
                         var txtLength = roleName.length;
@@ -366,20 +369,29 @@ function pollRemoteSet(){
                         localStorage.setItem("background", background);
                         $(".background").hide();
                         $(".card-container .bg" + background).show().html(roleName);
-                        // 字体切换
-                        var classes = $(".card-container .bg" + background).attr("class").split(" ");
-                        var oldFontClass;
-                        for(var i = 0; i < classes.length; i++){
-                            if(/^f/.test(classes[i])){
-                                oldFontClass = classes[i];
-                                break;
-                            }
-                        }
-                        if(oldFontClass){
-                            console.log("===>oldFontClass: ", oldFontClass);
+                    }
+                    // 字体样式切换
+                    var classes = $(".card-container .bg" + background).attr("class").split(" ");
+                    for(var i = 0; i < classes.length; i++){
+                        if(/^f/.test(classes[i])){
+                            var oldFontClass = classes[i];
+                            console.log("===>先移除oldFontClass: ", oldFontClass);
                             $(".card-container .bg" + background).removeClass(oldFontClass);
                         }
-                        $(".card-container .bg" + background).addClass("f"+ txtLength);
+                    }
+                    $(".card-container .bg" + background).removeClass("line2");
+
+                    if (roleName.indexOf(",") > -1) {
+                        let roleNameList = roleName.split(",");
+                        let newTxtLength = Math.max(roleNameList[0].length, roleNameList[1].length);
+                        $(".card-container .bg" + background).addClass("line2");
+                    } else {
+                        var txtLength = roleName.length;
+                        if (txtLength > 6) {
+                            $(".card-container .bg" + background).addClass("line2");
+                        } else {
+                            $(".card-container .bg" + background).addClass("f"+ txtLength);
+                        }
                     }
                 },
                 error: function(e) {
@@ -400,7 +412,18 @@ $(function(){
 	    $(".login-container").hide();
 	    $(".card-container").show();
 	    var txtLength = roleName.length;
-        $(".card-container .bg" + background).addClass("f"+ txtLength).html(roleName).show();
+	    if (roleName.indexOf(",") > -1) {
+	    	let roleNameList = roleName.split(",");
+	    	let newRoleName = roleNameList[0] + '</br>' + roleNameList[1];
+	    	let newTxtLength = Math.max(roleNameList[0].length, roleNameList[1].length);
+	    	$(".card-container .bg" + background).addClass("line2").html(newRoleName).show();
+	    } else {
+		    if (txtLength > 6) {
+		    	$(".card-container .bg" + background).addClass("line2").html(roleName).show();
+		    } else {
+	        	$(".card-container .bg" + background).addClass("f"+ txtLength).html(roleName).show();
+	       	}
+	    }
         // 联网下， 每隔5秒钟，轮询服务端，查询书记员端的电子桌牌设置
         pollRemoteSet();
     }

@@ -287,3 +287,8 @@ button.process3 {
 .background.bg2.f6{
 	font-size: 3rem;
 }
+.card-container .background.line2 {
+	line-height: 50vh;
+	word-break: break-all;
+	font-size: 3rem;
+}
