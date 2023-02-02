@@ -341,56 +341,56 @@ function pollRemoteSet(){
                     }
                     var roleName = localStorage.getItem("roleName");
                     var background = localStorage.getItem("background");
+                    var isChange = false;
                     // 诉讼地位变化
                     if(roleName != data["roleName"]){
-                        var oldTxtLength = roleName.length;
+                        isChange = true;
                         roleName = data["roleName"];
-                        var newTxtLength = roleName.length;
                         localStorage.setItem("roleName", roleName);
-                        // 切换背景
-                        if(background != data["backGroundName"]){
-                            background = data["backGroundName"];
-                            localStorage.setItem("background", background);
-                            $(".background").hide();
-                            $(".card-container .bg" + background).show();
-                        }
-                        // 诉讼地位
-                        if (roleName.indexOf(",") > -1) {
-					    	let roleNameList = roleName.split(",");
-	    					let newRoleName = roleNameList[0] + '</br>' + roleNameList[1];
-					    	$(".card-container .bg" + background).html(newRoleName);
-					    } else {
-                        	$(".card-container .bg" + background).html(roleName);
-                       	}
-                    }else if(background != data["backGroundName"]){
-                    // 仅背景切换
-                        var txtLength = roleName.length;
+                    }
+                    if(background != data["backGroundName"]){
+                    //  背景切换
+                        isChange = true;
                         background = data["backGroundName"];
                         localStorage.setItem("background", background);
                         $(".background").hide();
-                        $(".card-container .bg" + background).show().html(roleName);
+                        $(".card-container .bg" + background).show();
                     }
-                    // 字体样式切换
-                    var classes = $(".card-container .bg" + background).attr("class").split(" ");
-                    for(var i = 0; i < classes.length; i++){
-                        if(/^f/.test(classes[i])){
-                            var oldFontClass = classes[i];
-                            console.log("===>先移除oldFontClass: ", oldFontClass);
-                            $(".card-container .bg" + background).removeClass(oldFontClass);
-                        }
-                    }
-                    $(".card-container .bg" + background).removeClass("line2");
 
-                    if (roleName.indexOf(",") > -1) {
-                        let roleNameList = roleName.split(",");
-                        let newTxtLength = Math.max(roleNameList[0].length, roleNameList[1].length);
-                        $(".card-container .bg" + background).addClass("line2");
-                    } else {
-                        var txtLength = roleName.length;
-                        if (txtLength > 6) {
+                    if(isChange){
+                        // 诉讼地位
+                        if (roleName.indexOf(",") > -1) {
+                            let roleNameList = roleName.split(",");
+                            let newRoleName = roleNameList[0] + '</br>' + roleNameList[1];
+                            $(".card-container .bg" + background).html(newRoleName);
+                        } else {
+                            $(".card-container .bg" + background).html(roleName);
+                        }
+
+                        // 字体样式切换
+                        // 先移除旧的字体样式
+                        var classes = $(".card-container .bg" + background).attr("class").split(" ");
+                        for(var i = 0; i < classes.length; i++){
+                            if(/^f/.test(classes[i])){
+                                var oldFontClass = classes[i];
+                                console.log("===>先移除oldFontClass: ", oldFontClass);
+                                $(".card-container .bg" + background).removeClass(oldFontClass);
+                            }
+                        }
+                        $(".card-container .bg" + background).removeClass("line2");
+
+                        // 添加字体样式
+                        if (roleName.indexOf(",") > -1) {
+                            let roleNameList = roleName.split(",");
+                            let newTxtLength = Math.max(roleNameList[0].length, roleNameList[1].length);
                             $(".card-container .bg" + background).addClass("line2");
                         } else {
-                            $(".card-container .bg" + background).addClass("f"+ txtLength);
+                            var txtLength = roleName.length;
+                            if (txtLength > 6) {
+                                $(".card-container .bg" + background).addClass("line2");
+                            } else {
+                                $(".card-container .bg" + background).addClass("f"+ txtLength);
+                            }
                         }
                     }
                 },
